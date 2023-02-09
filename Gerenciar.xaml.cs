@@ -38,7 +38,6 @@ namespace CRUD
         public Gerenciar()
         {
             InitializeComponent();
-            dtTeste.Foreground = Brushes.Red;
         }
 
         private void BtnAdd_OnClick(object sender, RoutedEventArgs e)
