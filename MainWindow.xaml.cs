@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CRUD
 {
@@ -63,6 +65,11 @@ namespace CRUD
             {
                 Gerenciar gerencia = new Gerenciar();
                 gerencia.cds = cadastrar;
+                HintAssist.SetHelperText(gerencia.txtTelefone, "Digite um telefone válido");
+                gerencia.txtTelefone.Foreground = Brushes.Brown;
+                HintAssist.SetHelperText(gerencia.txtEmail, "Digite um email válido");
+                gerencia.txtEmail.Foreground = Brushes.Brown;
+
                 Pessoa[] pessoas = await DialogHost.Show(gerencia) as Pessoa[];
                 if (pessoas == null) return;
                 lboItems.ItemsSource = null;
@@ -83,7 +90,10 @@ namespace CRUD
                 gerencia.txtNome.Text = pessoa.Nome;
                 gerencia.txtSobrenome.Text = pessoa.Sobrenome;
                 gerencia.dtTeste.Text = pessoa.DtNascimento.ToString();
-                gerencia.txtTelefone.Text = pessoa.Telefone;
+                gerencia.txtTelefone.Text = Regex.Replace(
+                    pessoa.Telefone,
+                    @"^\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)*$",
+                    "($1$2) $3$4$5$6$7-$8$9$10$11"); 
                 gerencia.txtEmail.Text = pessoa.Email.Replace("\r","");
                 Pessoa[] pessoas = await DialogHost.Show(gerencia) as Pessoa[];
                 if (pessoas == null)

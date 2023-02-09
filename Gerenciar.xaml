@@ -41,13 +41,14 @@
                                 materialDesign:HintAssist.HintOpacity="0.25"
                                 materialDesign:HintAssist.Hint="Digite seu telefone"
                                 Margin="0,16,0,0"
-                                HorizontalAlignment="Stretch" />
+                                MaxLength="15"
+                                HorizontalAlignment="Stretch" TextChanged="txtTelefone_TextChanged" PreviewTextInput="txtTelefone_PreviewTextInput" />
         <TextBox
                                 x:Name="txtEmail"
                                 materialDesign:HintAssist.HintOpacity="0.25"
                                 materialDesign:HintAssist.Hint="Digite seu email"
                                 Margin="0,16,0,0"
-                                HorizontalAlignment="Stretch" />
+                                HorizontalAlignment="Stretch" TextChanged="txtEmail_TextChanged" />
 
         <StackPanel
                                     HorizontalAlignment="Right"

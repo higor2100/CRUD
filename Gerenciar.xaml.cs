@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,16 +14,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CRUD
 {
     /// <summary>
     /// Interação lógica para Gerenciar.xam
     /// </summary>
-    public partial class Gerenciar : UserControl
+    public partial class Gerenciar
     {
         private CadastroCSV cadastrar;
         private Pessoa pessoa;
+        bool tl, em = false;
 
         public CadastroCSV cds
         {
@@ -35,6 +38,7 @@ namespace CRUD
         public Gerenciar()
         {
             InitializeComponent();
+            dtTeste.Foreground = Brushes.Red;
         }
 
         private void BtnAdd_OnClick(object sender, RoutedEventArgs e)
@@ -74,6 +78,55 @@ namespace CRUD
        private void BtnCancelar_OnClick(object sender, RoutedEventArgs e)
        {
            DialogHost.Close(null, new Pessoa("","",DateTime.Now, "",""));
+        }
+
+        private void txtEmail_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox txt = (TextBox)sender;
+            //MessageBox.Show(txt.Foreground.ToString());
+            var match = Regex.Match(txt.Text, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", RegexOptions.IgnoreCase);
+            
+            if (!match.Success)
+            {
+                HintAssist.SetHelperText(txt, "Digite um e-mail válido");
+                txt.Foreground = Brushes.Brown;
+                em = false;
+                return;
+            }
+            HintAssist.SetHelperText(txt, "");
+            txt.Foreground = Brushes.DimGray;
+            em = true;
+        }
+
+        private void txtTelefone_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+            //
+            TextBox txt = (TextBox)sender;
+            //MessageBox.Show(String.Format("{0:(##) #####-####}", txt.Text));
+            txt.Text = Regex.Replace(
+                txt.Text,
+                @"^\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)\D*(\d)*$",
+                "($1$2) $3$4$5$6$7-$8$9$10$11");
+            var match = Regex.Match(txt.Text, @"\(\d{2,}\) \d{5,}\-\d{4}", RegexOptions.IgnoreCase);
+            if (!match.Success)
+            {
+                HintAssist.SetHelperText(txt, "Digite um telefone válido");
+                txt.Foreground = Brushes.Brown;
+                em = false;
+                return;
+            }
+            HintAssist.SetHelperText(txt, "");
+            txt.Foreground = Brushes.DimGray;
+            tl = true;
+        }
+
+      
+
+        private void txtTelefone_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }
